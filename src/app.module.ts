@@ -12,7 +12,9 @@ import { WorkOrderModule } from './work-order/work-order.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://admin:admin@127.0.0.1:27017/keysstore'),
+    MongooseModule.forRoot(
+      'mongodb://admin:admin@mongodb:27017/keysstore?authSource=keysstore',
+    ),
     ArticleModule,
     MachineModule,
     EmployeeModule,

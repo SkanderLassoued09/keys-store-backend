@@ -5,14 +5,14 @@ services:
     container_name: mongodb
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./database:/data/data
+      - ./database:/data/db # Correct persistent path
 
     ports:
       - '27017:27017'
     environment:
       MONGO_INIT_DB_ROOT_USERNAME: admin
       MONGO_INIT_DB_ROOT_PASSWORD: admin
-      MONGO_INIT_DATABASE: keysstoredb
+      MONGO_INIT_DATABASE: keysstore
 networks:
   default:
     external: true
