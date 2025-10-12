@@ -25,6 +25,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.0",
     "mongoose": "^8.18.3",
     "nest-winston": "^1.10.2",
     "reflect-metadata": "^0.2.2",

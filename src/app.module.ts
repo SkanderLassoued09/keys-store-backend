@@ -7,7 +7,7 @@ import { MachineModule } from './machine/machine.module';
 import { EmployeeModule } from './employee/employee.module';
 import { ProviderModule } from './provider/provider.module';
 import { ClientModule } from './client/client.module';
-import { DocumentModule } from './document/document.module';
+import { DocumentModule } from './document/bills.module';
 import { WorkOrderModule } from './work-order/work-order.module';
 
 @Module({

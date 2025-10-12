@@ -1,26 +1,91 @@
-import { Injectable } from '@nestjs/common';
+// src/modules/service/service.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateWorkOrderDto } from './dto/create-work-order.dto';
 import { UpdateWorkOrderDto } from './dto/update-work-order.dto';
+import { WorkOrder } from './entities/work-order.entity';
 
 @Injectable()
 export class WorkOrderService {
-  create(createWorkOrderDto: CreateWorkOrderDto) {
-    return 'This action adds a new workOrder';
+  constructor(
+    @InjectModel(WorkOrder.name)
+    private readonly workOrderModel: Model<WorkOrder>,
+  ) {}
+
+  async create(
+    createWorkOrderDto: CreateWorkOrderDto,
+  ): Promise<WorkOrder | any> {
+    try {
+      const createdWorkOrder = new this.workOrderModel(createWorkOrderDto);
+      return createdWorkOrder.save();
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
-  findAll() {
-    return `This action returns all workOrder`;
+  async findAll(): Promise<WorkOrder[] | any> {
+    try {
+      return this.workOrderModel
+        .find()
+        .populate('employee client machine')
+        .exec();
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} workOrder`;
+  async findOne(id: string): Promise<WorkOrder | any> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new NotFoundException(`WorkOrder with id ${id} not found`);
+      }
+      const workOrder = await this.workOrderModel
+        .findById(id)
+        .populate('employee client machine')
+        .exec();
+      if (!workOrder) {
+        throw new NotFoundException(`WorkOrder with id ${id} not found`);
+      }
+      return workOrder;
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
-  update(id: number, updateWorkOrderDto: UpdateWorkOrderDto) {
-    return `This action updates a #${id} workOrder`;
+  async update(
+    id: string,
+    updateWorkOrderDto: UpdateWorkOrderDto,
+  ): Promise<WorkOrder | any> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new NotFoundException(`WorkOrder with id ${id} not found`);
+      }
+      const updatedWorkOrder = await this.workOrderModel
+        .findByIdAndUpdate(id, updateWorkOrderDto, { new: true })
+        .populate('employee client machine')
+        .exec();
+      if (!updatedWorkOrder) {
+        throw new NotFoundException(`WorkOrder with id ${id} not found`);
+      }
+      return updatedWorkOrder;
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} workOrder`;
+  async remove(id: string): Promise<{ message: string } | any> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new NotFoundException(`WorkOrder with id ${id} not found`);
+      }
+      const deleted = await this.workOrderModel.findByIdAndDelete(id).exec();
+      if (!deleted) {
+        throw new NotFoundException(`WorkOrder with id ${id} not found`);
+      }
+      return { message: 'WorkOrder deleted successfully' };
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 }

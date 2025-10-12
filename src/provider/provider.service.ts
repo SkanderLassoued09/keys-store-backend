@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
+import { Provider } from './entities/provider.entity';
 
 @Injectable()
 export class ProviderService {
-  create(createProviderDto: CreateProviderDto) {
-    return 'This action adds a new provider';
+  constructor(
+    @InjectModel(Provider.name) private readonly providerModel: Model<Provider>,
+  ) {}
+
+  async create(createProviderDto: CreateProviderDto): Promise<Provider> {
+    const createdProvider = new this.providerModel(createProviderDto);
+    return createdProvider.save();
   }
 
-  findAll() {
-    return `This action returns all provider`;
+  async findAll(): Promise<Provider[]> {
+    return this.providerModel.find().populate('articles machines').exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} provider`;
+  async findOne(id: string): Promise<Provider> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException(`Provider with id ${id} not found`);
+    }
+    const provider = await this.providerModel
+      .findById(id)
+      .populate('articles machines')
+      .exec();
+    if (!provider) {
+      throw new NotFoundException(`Provider with id ${id} not found`);
+    }
+    return provider;
   }
 
-  update(id: number, updateProviderDto: UpdateProviderDto) {
-    return `This action updates a #${id} provider`;
+  async update(
+    id: string,
+    updateProviderDto: UpdateProviderDto,
+  ): Promise<Provider> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException(`Provider with id ${id} not found`);
+    }
+    const updatedProvider = await this.providerModel
+      .findByIdAndUpdate(id, updateProviderDto, { new: true })
+      .populate('articles machines')
+      .exec();
+    if (!updatedProvider) {
+      throw new NotFoundException(`Provider with id ${id} not found`);
+    }
+    return updatedProvider;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} provider`;
+  async remove(id: string): Promise<{ message: string }> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException(`Provider with id ${id} not found`);
+    }
+    const deleted = await this.providerModel.findByIdAndDelete(id).exec();
+    if (!deleted) {
+      throw new NotFoundException(`Provider with id ${id} not found`);
+    }
+    return { message: 'Provider deleted successfully' };
   }
 }

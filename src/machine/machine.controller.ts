@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { MachineService } from './machine.service';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
@@ -19,16 +27,16 @@ export class MachineController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.machineService.findOne(+id);
+    return this.machineService.findOne(id); // keep as string
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMachineDto: UpdateMachineDto) {
-    return this.machineService.update(+id, updateMachineDto);
+    return this.machineService.update(id, updateMachineDto); // keep as string
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.machineService.remove(+id);
+    return this.machineService.remove(id); // keep as string
   }
 }
