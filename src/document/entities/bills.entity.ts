@@ -17,4 +17,4 @@ export class Bills extends Document {
   employee: Employee;
 }
 
-export const Billschema = SchemaFactory.createForClass(Bills);
+export const Billsschema = SchemaFactory.createForClass(Bills);

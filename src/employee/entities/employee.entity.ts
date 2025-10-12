@@ -20,7 +20,7 @@ export class Employee extends Document {
   @Prop()
   salary: number;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'WorkOrder' }] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Service' }] })
   services: WorkOrder[];
 
   @Prop({ default: true })
