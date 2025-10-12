@@ -7,27 +7,23 @@ import { Provider } from 'src/provider/entities/provider.entity';
 export class Article extends Document {
   @Prop({ required: true })
   name: string;
-
   @Prop()
-  description: string;
-
-  //   @Prop({ type: Types.ObjectId, ref: 'Category' })
-  //   category: Category;
-
+  reference: string;
   @Prop({ required: true })
-  price: number;
-
+  purchasePrice: number;
+   @Prop({ required: true })
+  sellingrice: number;
   @Prop({ default: 0 })
-  stock: number;
-
+  stockQuantity: number;
+  @Prop({ default: 0 })
+  shopQuantity: number;
   @Prop({ type: Types.ObjectId, ref: 'Fournisseur' })
   fournisseur: Provider;
-
   @Prop({ enum: ['key', 'keychain', 'stamp', 'other'], default: 'key' })
   type: string;
 
-  @Prop()
-  image: string;
+  @Prop({ enum: ['simple', 'a pointe', 'double panneton', 'Tubulaire'], default: 'simple' })
+  category: string;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

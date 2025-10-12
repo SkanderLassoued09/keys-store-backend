@@ -11,14 +11,8 @@ export class Employee extends Document {
   @Prop({ required: true })
   lastName: string;
 
-  @Prop({ required: true, unique: true })
-  email: string;
-
   @Prop()
   phone: string;
-
-  @Prop({ enum: ['technician', 'cashier', 'manager'], default: 'technician' })
-  role: string;
 
   @Prop()
   hireDate: Date;

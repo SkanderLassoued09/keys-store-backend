@@ -16,5 +16,5 @@ services:
 
 networks:
   hostglobal:
-    external:
-      name: hostglobal
+    external: true
+
