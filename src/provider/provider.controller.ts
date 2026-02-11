@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ProviderService } from './provider.service';
@@ -44,15 +45,15 @@ export class ProviderController {
     return this.providerService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Update provider by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Provider ID' })
   @ApiResponse({ status: 200, description: 'Provider updated', type: Provider })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateProviderDto: UpdateProviderDto,
   ) {
-    return this.providerService.update(id, updateProviderDto);
+    return await this.providerService.update(id, updateProviderDto);
   }
 
   @Delete(':id')

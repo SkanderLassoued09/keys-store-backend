@@ -35,6 +35,22 @@ export class WorkOrderService {
     }
   }
 
+  // ✅ Create multiple work orders (Bulk Insert)
+  async createBulkOrderService(createBulkWorkOrderDto: any) {
+    try {
+      const result = await this.workOrderModel.insertMany(
+        createBulkWorkOrderDto.orderServices,
+        {
+          ordered: true, // Stop on first error (default: true)
+          // ordered: false, // Continue even if some documents fail
+        },
+      );
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async findOne(id: string): Promise<WorkOrder | any> {
     try {
       if (!Types.ObjectId.isValid(id)) {

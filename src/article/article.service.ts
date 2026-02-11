@@ -12,12 +12,21 @@ export class ArticleService {
   ) {}
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
+    console.log(createArticleDto);
     const createdArticle = new this.articleModel(createArticleDto);
-    return createdArticle.save();
+    return await createdArticle.save();
   }
 
-  async findAll(): Promise<Article[]> {
-    return this.articleModel.find().populate('fournisseur').exec();
+  async findAll(): Promise<any[]> {
+    const articles = await this.articleModel
+      .find()
+      .populate('fournisseur', 'name')
+      .lean()
+      .exec();
+    return articles.map((article) => ({
+      ...article,
+      fournisseur: article.fournisseur?.name ?? null,
+    }));
   }
 
   async findOne(id: string): Promise<Article> {
@@ -60,5 +69,21 @@ export class ArticleService {
       throw new NotFoundException(`Article with id ${id} not found`);
     }
     return { message: 'Article deleted successfully' };
+  }
+
+  async getArticleType(id: string) {
+    try {
+      return await this.articleModel.distinct('type');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getArticlesByType(type: string) {
+    try {
+      return await this.articleModel.find({ type });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

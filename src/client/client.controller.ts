@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ClientService } from './client.service';
@@ -21,8 +22,8 @@ export class ClientController {
   @Post()
   @ApiOperation({ summary: 'Create a new client' })
   @ApiResponse({ status: 201, description: 'Client created', type: Client })
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientService.create(createClientDto);
+  async create(@Body() createClientDto: CreateClientDto) {
+    return await this.clientService.create(createClientDto);
   }
 
   @Get()
@@ -40,12 +41,15 @@ export class ClientController {
     return this.clientService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Update client by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Client ID' })
   @ApiResponse({ status: 200, description: 'Client updated', type: Client })
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
-    return this.clientService.update(id, updateClientDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateClientDto: UpdateClientDto,
+  ) {
+    return await this.clientService.update(id, updateClientDto);
   }
 
   @Delete(':id')

@@ -13,7 +13,7 @@ export class MachineService {
 
   async create(createMachineDto: CreateMachineDto): Promise<Machine> {
     const createdMachine = new this.machineModel(createMachineDto);
-    return createdMachine.save();
+    return await createdMachine.save();
   }
 
   async findAll(): Promise<Machine[]> {

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { MachineService } from './machine.service';
@@ -44,7 +45,7 @@ export class MachineController {
     return this.machineService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Update machine by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Machine ID' })
   @ApiResponse({ status: 200, description: 'Machine updated', type: Machine })

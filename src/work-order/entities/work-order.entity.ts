@@ -13,14 +13,14 @@ export class WorkOrder extends Document {
   @Prop()
   description: string;
 
-  //   @Prop({ type: Types.ObjectId, ref: 'Category' })
-  //   category: Category;
+  @Prop({ required: true })
+  quantity: number;
 
   @Prop({ required: true })
   price: number;
 
   @Prop()
-  duration: number;
+  duration: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Employee' })
   employee: Employee;

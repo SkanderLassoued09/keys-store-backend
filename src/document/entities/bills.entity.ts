@@ -13,8 +13,6 @@ export class Bills extends Document {
   type: string;
   @Prop({ type: Types.ObjectId, ref: 'Fournisseur' })
   fournisseur: Provider;
-  @Prop({ type: Types.ObjectId, ref: 'Employee' })
-  employee: Employee;
 }
 
 export const Billsschema = SchemaFactory.createForClass(Bills);

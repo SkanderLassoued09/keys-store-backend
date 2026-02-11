@@ -12,7 +12,7 @@ export class ClientService {
   // Create a new client
   async create(createClientDto: CreateClientDto): Promise<Client> {
     const createdClient = new this.clientModel(createClientDto);
-    return createdClient.save();
+    return await createdClient.save();
   }
 
   // Get all clients
