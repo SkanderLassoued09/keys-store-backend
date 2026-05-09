@@ -27,18 +27,22 @@ export class CreateArticleDto {
   fournisseur?: string;
 
   @ApiProperty({
-    description: 'Type of article',
-    enum: ['key', 'keychain', 'stamp', 'other'],
-    default: 'key',
+    description: 'Type of article (primary classification)',
     required: false,
   })
   type?: string;
 
   @ApiProperty({
-    description: 'Category of article',
-    enum: ['simple', 'a pointe', 'double panneton', 'Tubulaire'],
-    default: 'simple',
+    description: 'Pinned for the order-service quick-access banner',
+    default: false,
     required: false,
   })
-  category?: string;
+  featured?: boolean;
+
+  @ApiProperty({
+    description: 'Employee commission % applied per sale (e.g. 1, 1.5, 2.25)',
+    default: 0,
+    required: false,
+  })
+  commissionPercent?: number;
 }

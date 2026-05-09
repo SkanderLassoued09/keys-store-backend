@@ -9,6 +9,7 @@ import { ProviderModule } from './provider/provider.module';
 import { ClientModule } from './client/client.module';
 import { DocumentModule } from './document/bills.module';
 import { WorkOrderModule } from './work-order/work-order.module';
+import { StockTransferModule } from './stock-transfer/stock-transfer.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { WorkOrderModule } from './work-order/work-order.module';
     ClientModule,
     DocumentModule,
     WorkOrderModule,
+    StockTransferModule,
   ],
   controllers: [AppController],
   providers: [AppService],

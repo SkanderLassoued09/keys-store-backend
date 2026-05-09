@@ -33,14 +33,14 @@ export class Article {
   })
   type: string;
 
-  @Prop({
-    // enum: ['simple', 'a pointe', 'double panneton', 'Tubulaire'],
-    // default: 'simple',
-  })
-  category: string;
+  // Admin-toggled flag for the order-service "quick access" banner.
+  @Prop({ default: false })
+  featured: boolean;
 
-  @Prop({})
-  articleType: string;
+  // Employee commission percentage (e.g. 1, 1.5, 2.25). Snapshotted onto each
+  // WorkOrder line at sale time so historical orders preserve their rate.
+  @Prop({ default: 0, min: 0 })
+  commissionPercent: number;
 
   @Prop({
     // enum: [
