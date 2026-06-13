@@ -7,6 +7,7 @@ import { Employee } from 'src/employee/entities/employee.entity';
 import { Machine } from 'src/machine/entities/machine.entity';
 
 export type WorkOrderEntryType = 'article' | 'service';
+export type WorkOrderTransactionType = 'SALE' | 'RETURN_REPLACED' | 'RETURN_REFUNDED';
 
 @Schema({ timestamps: true })
 export class WorkOrder extends Document {
@@ -25,10 +26,19 @@ export class WorkOrder extends Document {
   @Prop()
   duration: string;
 
+  @Prop()
+  category: string;
+
+  @Prop()
+  customerName: string;
+
   // Drives commission rate (1% article / 10% service) and revenue breakdown.
   // Defaulted to 'article' so historical rows behave as articles without backfill.
   @Prop({ enum: ['article', 'service'], default: 'article' })
   entryType: WorkOrderEntryType;
+
+  @Prop({ enum: ['SALE', 'RETURN_REPLACED', 'RETURN_REFUNDED'], default: 'SALE' })
+  transactionType: WorkOrderTransactionType;
 
   @Prop({ type: Types.ObjectId, ref: 'Article', default: null })
   article: Article;
@@ -54,6 +64,15 @@ export class WorkOrder extends Document {
 
   @Prop({ default: 0, min: 0 })
   calculatedPrime: number;
+
+  @Prop({ default: false })
+  refunded: boolean;
+
+  @Prop({ default: null })
+  refundedAt: Date;
+
+  @Prop({ default: 0, min: 0 })
+  refundedAmount: number;
 }
 
 export const WorkOrderSchema = SchemaFactory.createForClass(WorkOrder);

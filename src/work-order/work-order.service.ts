@@ -32,24 +32,45 @@ export class WorkOrderService {
     }
   }
 
-  async findAll(): Promise<WorkOrder[] | any> {
+  async findAll(filters?: { from?: string; to?: string }): Promise<WorkOrder[] | any> {
     try {
+      const query: Record<string, any> = {};
+      if (filters?.from || filters?.to) {
+        query.createdAt = {};
+        if (filters.from) {
+          const from = new Date(filters.from);
+          if (Number.isNaN(from.getTime())) {
+            throw new BadRequestException('Date de dÃ©but invalide.');
+          }
+          query.createdAt.$gte = from;
+        }
+        if (filters.to) {
+          const to = new Date(filters.to);
+          if (Number.isNaN(to.getTime())) {
+            throw new BadRequestException('Date de fin invalide.');
+          }
+          query.createdAt.$lte = to;
+        }
+      }
+
       return this.workOrderModel
-        .find()
+        .find(query)
         .populate('employee client machine')
+        .sort({ createdAt: -1 })
         .exec();
     } catch (error) {
       console.log('error', error);
+      throw error;
     }
   }
 
-  // Bulk insert with stock decrement.
+  // Bulk insert with shop stock decrement.
   //
   // Standalone Mongo doesn't support multi-document transactions, so we use
   // the "compensating actions" pattern:
-  //   1. For each article line, atomically decrement Article.stockQuantity
+  //   1. For each article line, atomically decrement Article.shopQuantity
   //      with a $gte guard so concurrent confirmations can't oversell.
-  //   2. If any decrement fails (insufficient stock), undo the prior
+  //   2. If any decrement fails (insufficient shop stock), undo the prior
   //      decrements and throw 409.
   //   3. insertMany the WorkOrders. If that fails, undo all decrements.
   // Service entries (entryType === 'service') skip stock entirely.
@@ -96,11 +117,11 @@ export class WorkOrderService {
       for (const { id, qty } of decremented) {
         try {
           await this.articleModel
-            .updateOne({ _id: id }, { $inc: { stockQuantity: qty } })
+            .updateOne({ _id: id }, { $inc: { shopQuantity: qty } })
             .exec();
         } catch (rollbackErr) {
           // Last-resort log; don't mask the original error.
-          console.error('Stock rollback failed for', id, rollbackErr);
+          console.error('Shop stock rollback failed for', id, rollbackErr);
         }
       }
     };
@@ -109,18 +130,18 @@ export class WorkOrderService {
       for (const [id, qty] of neededByArticle.entries()) {
         const updated = await this.articleModel
           .findOneAndUpdate(
-            { _id: id, stockQuantity: { $gte: qty } },
-            { $inc: { stockQuantity: -qty } },
+            { _id: id, shopQuantity: { $gte: qty } },
+            { $inc: { shopQuantity: -qty } },
             { new: true },
           )
           .exec();
 
         if (!updated) {
-          // Either the article doesn't exist or stock is insufficient.
+          // Either the article doesn't exist or shop stock is insufficient.
           // Pull the doc once for a useful error message.
           const existing = await this.articleModel
             .findById(id)
-            .select('name stockQuantity')
+            .select('name shopQuantity')
             .exec();
           await rollback();
           if (!existing) {
@@ -129,7 +150,7 @@ export class WorkOrderService {
             );
           }
           throw new ConflictException(
-            `Stock insuffisant pour: ${existing.name} (disponible: ${existing.stockQuantity}, demandé: ${qty}).`,
+            `Stock magasin insuffisant pour: ${existing.name} (disponible: ${existing.shopQuantity}, demandé: ${qty}).`,
           );
         }
 

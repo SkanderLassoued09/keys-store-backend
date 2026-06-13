@@ -13,12 +13,25 @@ export class CreateWorkOrderDto {
   @ApiProperty({ example: 2, required: false })
   duration?: number;
 
+  @ApiProperty({ example: 'Reparation serrure', required: false })
+  category?: string;
+
+  @ApiProperty({ example: 'Ahmed Ben Ali', required: false })
+  customerName?: string;
+
   @ApiProperty({
     enum: ['article', 'service'],
     default: 'article',
     required: false,
   })
   entryType?: 'article' | 'service';
+
+  @ApiProperty({
+    enum: ['SALE', 'RETURN_REPLACED', 'RETURN_REFUNDED'],
+    default: 'SALE',
+    required: false,
+  })
+  transactionType?: 'SALE' | 'RETURN_REPLACED' | 'RETURN_REFUNDED';
 
   @ApiProperty({
     example: '60f6c0b3b3d1c12d34e1f000',
@@ -54,4 +67,13 @@ export class CreateWorkOrderDto {
     required: false,
   })
   calculatedPrime?: number;
+
+  @ApiProperty({ default: false, required: false })
+  refunded?: boolean;
+
+  @ApiProperty({ required: false })
+  refundedAt?: Date;
+
+  @ApiProperty({ default: 0, required: false })
+  refundedAmount?: number;
 }

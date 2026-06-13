@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { WorkOrderService } from './work-order.service';
 import { CreateWorkOrderDto } from './dto/create-work-order.dto';
@@ -26,8 +27,8 @@ export class WorkOrderController {
 
   @ApiOperation({ summary: 'Get all work orders' })
   @Get()
-  findAll() {
-    return this.workOrderService.findAll();
+  findAll(@Query('from') from?: string, @Query('to') to?: string) {
+    return this.workOrderService.findAll({ from, to });
   }
 
   // ✅ Create multiple work orders (Bulk Insert)
