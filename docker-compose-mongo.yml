@@ -7,8 +7,11 @@ services:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - ./database:/data/db # Correct persistent path
 
+    # Host 27017 is taken by the local system mongod; publish on 27018 instead.
+    # The backend reaches Mongo at mongodb:27017 over the internal hostglobal
+    # network, so the container's internal port stays 27017 and is unaffected.
     ports:
-      - '27017:27017'
+      - '27018:27017'
     environment:
       MONGO_INIT_DB_ROOT_USERNAME: admin
       MONGO_INIT_DB_ROOT_PASSWORD: admin

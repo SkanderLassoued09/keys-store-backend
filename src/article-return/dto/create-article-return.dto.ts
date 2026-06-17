@@ -17,7 +17,7 @@ export class CreateArticleReturnDto {
   @ApiProperty({ required: false })
   returnDate?: Date;
 
-  @ApiProperty({ enum: ['REPLACED', 'REFUNDED'] })
+  @ApiProperty({ enum: ['REPAIRED', 'REPLACED', 'REFUNDED'] })
   returnType: ArticleReturnType;
 
   @ApiProperty({ required: false })

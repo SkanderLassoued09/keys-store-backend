@@ -7,6 +7,10 @@ export class Machine extends Document {
   @Prop({ required: true })
   name: string;
 
+  // Image URL or base64 data URI for the machine's visual card.
+  @Prop()
+  image: string;
+
   @Prop()
   type: string;
   @Prop()

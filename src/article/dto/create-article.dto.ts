@@ -27,10 +27,24 @@ export class CreateArticleDto {
   fournisseur?: string;
 
   @ApiProperty({
-    description: 'Type of article (primary classification)',
+    description: 'Type of article (legacy classification, kept for POS grouping)',
     required: false,
   })
   type?: string;
+
+  @ApiProperty({
+    description: 'Dynamic Category ID (new classification)',
+    type: String,
+    required: false,
+  })
+  category?: string;
+
+  @ApiProperty({
+    description: 'SubCategory ID (child of the selected Category)',
+    type: String,
+    required: false,
+  })
+  subCategory?: string;
 
   @ApiProperty({
     description: 'Pinned for the order-service quick-access banner',

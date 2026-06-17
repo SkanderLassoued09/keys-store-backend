@@ -4,6 +4,12 @@ export class CreateMachineDto {
   @ApiProperty({ description: 'Name of the machine' })
   name: string;
 
+  @ApiProperty({
+    description: 'Image URL or base64 data URI for the machine card',
+    required: false,
+  })
+  image?: string;
+
   @ApiProperty({ description: 'Type of the machine', required: false })
   type?: string;
 

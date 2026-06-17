@@ -2,6 +2,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, HydratedDocument, Types } from 'mongoose';
 import { Provider } from 'src/provider/entities/provider.entity';
+import { Category } from 'src/category/entities/category.entity';
+import { SubCategory } from 'src/sub-category/entities/sub-category.entity';
 export type ArticleDocument = HydratedDocument<Article>;
 
 @Schema({ timestamps: true })
@@ -26,6 +28,15 @@ export class Article {
 
   @Prop({ type: Types.ObjectId, ref: Provider.name })
   fournisseur?: Provider;
+
+  // Dynamic, admin-managed classification (new). Optional and additive — the
+  // legacy `type` string below is kept for backward compatibility and POS
+  // grouping, so existing articles without a category keep working.
+  @Prop({ type: Types.ObjectId, ref: Category.name, default: null })
+  category?: Category;
+
+  @Prop({ type: Types.ObjectId, ref: SubCategory.name, default: null })
+  subCategory?: SubCategory;
 
   @Prop({
     // enum: ['key', 'keychain', 'stamp', 'carKeys', 'remote', 'other'],

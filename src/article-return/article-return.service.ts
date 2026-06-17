@@ -30,7 +30,7 @@ export class ArticleReturnService {
     }
 
     const returnType = dto.returnType;
-    if (!['REPLACED', 'REFUNDED'].includes(returnType)) {
+    if (!['REPAIRED', 'REPLACED', 'REFUNDED'].includes(returnType)) {
       throw new BadRequestException('Type de retour invalide.');
     }
 
@@ -120,25 +120,29 @@ export class ArticleReturnService {
       }
 
       const created = await this.returnModel.create(payload);
-      await this.workOrderModel.create({
-        name: this.returnWorkOrderName(returnType, originalArticle, replacementArticle),
-        description: dto.notes ?? '',
-        quantity: returnType === 'REPLACED' ? payload.replacementQuantity : Number(originalWorkOrder?.quantity ?? 1),
-        price: payload.revenueImpact,
-        duration: 0,
-        category: returnType === 'REPLACED' ? 'Replaced Return' : 'Refunded Return',
-        customerName: payload.customerName,
-        employee: payload.employee,
-        entryType: 'article',
-        transactionType: returnType === 'REPLACED' ? 'RETURN_REPLACED' : 'RETURN_REFUNDED',
-        article: returnType === 'REPLACED' ? payload.replacementArticle : payload.originalArticle,
-        status: 'done',
-        refunded: returnType === 'REFUNDED',
-        refundedAt: returnType === 'REFUNDED' ? payload.returnDate : null,
-        refundedAmount: returnType === 'REFUNDED' ? payload.refundedAmount : 0,
-        createdAt: payload.returnDate,
-        updatedAt: payload.returnDate,
-      });
+      // REPAIRED has zero revenue impact and no stock movement, so it does not
+      // emit a WorkOrder revenue row — it lives only in the returns table.
+      if (returnType !== 'REPAIRED') {
+        await this.workOrderModel.create({
+          name: this.returnWorkOrderName(returnType, originalArticle, replacementArticle),
+          description: dto.notes ?? '',
+          quantity: returnType === 'REPLACED' ? payload.replacementQuantity : Number(originalWorkOrder?.quantity ?? 1),
+          price: payload.revenueImpact,
+          duration: 0,
+          category: returnType === 'REPLACED' ? 'Replaced Return' : 'Refunded Return',
+          customerName: payload.customerName,
+          employee: payload.employee,
+          entryType: 'article',
+          transactionType: returnType === 'REPLACED' ? 'RETURN_REPLACED' : 'RETURN_REFUNDED',
+          article: returnType === 'REPLACED' ? payload.replacementArticle : payload.originalArticle,
+          status: 'done',
+          refunded: returnType === 'REFUNDED',
+          refundedAt: returnType === 'REFUNDED' ? payload.returnDate : null,
+          refundedAmount: returnType === 'REFUNDED' ? payload.refundedAmount : 0,
+          createdAt: payload.returnDate,
+          updatedAt: payload.returnDate,
+        });
+      }
       return this.findOne(String(created._id));
     } catch (err) {
       if (decrementedReplacement) {

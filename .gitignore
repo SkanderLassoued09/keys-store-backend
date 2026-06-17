@@ -54,3 +54,18 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Local MongoDB data (Docker bind mount ./database:/data/db) — never commit
+/database/
+
+# VSCode "Local History" extension
+.history/
+
+# Stale root-owned build dirs left over from Docker builds
+*_root_old/
+*.root-old/
+dist.root-old/
+
+# Local run logs
+run-be.log
+run-fe.log

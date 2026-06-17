@@ -5,7 +5,7 @@ import { Employee } from 'src/employee/entities/employee.entity';
 import { WorkOrder } from 'src/work-order/entities/work-order.entity';
 
 export type ArticleReturnDocument = HydratedDocument<ArticleReturn>;
-export type ArticleReturnType = 'REPLACED' | 'REFUNDED';
+export type ArticleReturnType = 'REPAIRED' | 'REPLACED' | 'REFUNDED';
 
 @Schema({ timestamps: true })
 export class ArticleReturn {
@@ -24,7 +24,7 @@ export class ArticleReturn {
   @Prop({ default: Date.now })
   returnDate: Date;
 
-  @Prop({ enum: ['REPLACED', 'REFUNDED'], required: true })
+  @Prop({ enum: ['REPAIRED', 'REPLACED', 'REFUNDED'], required: true })
   returnType: ArticleReturnType;
 
   @Prop()

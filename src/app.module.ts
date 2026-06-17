@@ -11,11 +11,17 @@ import { DocumentModule } from './document/bills.module';
 import { WorkOrderModule } from './work-order/work-order.module';
 import { StockTransferModule } from './stock-transfer/stock-transfer.module';
 import { ArticleReturnModule } from './article-return/article-return.module';
+import { CategoryModule } from './category/category.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
+import { EmployeeLedgerModule } from './employee-ledger/employee-ledger.module';
+import { WorkTaskModule } from './work-task/work-task.module';
+import { SettingsModule } from './settings/settings.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb://admin:admin@mongodb:27017/keysstore?authSource=keysstore',
+      'mongodb://admin:admin@127.0.0.1:27017/keysstore?authSource=keysstore',
     ),
     ArticleModule,
     MachineModule,
@@ -26,6 +32,12 @@ import { ArticleReturnModule } from './article-return/article-return.module';
     WorkOrderModule,
     StockTransferModule,
     ArticleReturnModule,
+    CategoryModule,
+    SubCategoryModule,
+    EmployeeLedgerModule,
+    WorkTaskModule,
+    SettingsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
