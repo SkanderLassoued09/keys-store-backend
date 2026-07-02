@@ -52,7 +52,9 @@ export class WorkOrder extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Machine', default: null })
   machine: Machine;
 
-  @Prop({ enum: ['pending', 'in-progress', 'done'], default: 'pending' })
+  // Service lifecycle. Article sales ignore this (their outcome is Vendu /
+  // Retourné, derived from transactionType/refunded on the frontend).
+  @Prop({ enum: ['pending', 'in-progress', 'done', 'cancelled'], default: 'pending' })
   status: string;
 
   // Snapshotted at sale time. For article entries, copied from the parent

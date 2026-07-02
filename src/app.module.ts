@@ -17,11 +17,15 @@ import { EmployeeLedgerModule } from './employee-ledger/employee-ledger.module';
 import { WorkTaskModule } from './work-task/work-task.module';
 import { SettingsModule } from './settings/settings.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    // Default targets the Docker "mongodb" service on the hostglobal network.
+    // For local (non-Docker) runs, set MONGO_URI in .env (e.g. 127.0.0.1:27017).
     MongooseModule.forRoot(
-      'mongodb://admin:admin@127.0.0.1:27017/keysstore?authSource=keysstore',
+      process.env.MONGO_URI ||
+        'mongodb://admin:admin@mongodb:27017/keysstore?authSource=keysstore',
     ),
     ArticleModule,
     MachineModule,
@@ -38,6 +42,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     WorkTaskModule,
     SettingsModule,
     AnalyticsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
