@@ -24,14 +24,12 @@ async function bootstrap() {
   });
 
   const port = Number(process.env.PORT) || 3000;
-  // Host binding is switched purely by NODE_ENV (set by the npm scripts):
-  //   development       → 127.0.0.1  (local machine only)
-  //   production/unset  → 0.0.0.0    (reachable on the LAN, e.g. 192.168.x.x)
-  // An explicit HOST env var always wins. Unset defaults to 0.0.0.0 so the
-  // Docker container (which runs with NODE_ENV unset) stays reachable as before.
-  const host =
-    process.env.HOST ||
-    (process.env.NODE_ENV === 'development' ? '127.0.0.1' : '0.0.0.0');
+  // Bind ALL interfaces by default. This is required for Docker: inside a
+  // container 127.0.0.1 is the container's own loopback, so the published port
+  // (host:3000 → container:3000) can't reach an app bound to 127.0.0.1. 0.0.0.0
+  // is also what the LAN/prod setup needs. To restrict to local-only on a bare
+  // host, set HOST=127.0.0.1 explicitly.
+  const host = process.env.HOST || '0.0.0.0';
 
   await app.listen(port, host);
   console.log(
